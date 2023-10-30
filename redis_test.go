@@ -115,3 +115,12 @@ func TestGeoPoint(t *testing.T) {
 
 	assert.Equal(t, []string{"Toko A", "Toko B"}, sellers)
 }
+
+func TestHyperLogLog(t *testing.T) {
+	client.PFAdd(ctx, "visitors", "eko", "kurniawan", "khannedy")
+	client.PFAdd(ctx, "visitors", "eko", "budi", "joko")
+	client.PFAdd(ctx, "visitors", "rully", "budi", "joko")
+
+	total := client.PFCount(ctx, "visitors").Val()
+	assert.Equal(t, int64(6), total)
+}
