@@ -52,3 +52,15 @@ func TestList(t *testing.T) {
 
 	client.Del(ctx, "names")
 }
+
+func TestSet(t *testing.T) {
+	client.SAdd(ctx, "students", "Eko")
+	client.SAdd(ctx, "students", "Eko")
+	client.SAdd(ctx, "students", "Kurniawan")
+	client.SAdd(ctx, "students", "Kurniawan")
+	client.SAdd(ctx, "students", "Khannedy")
+	client.SAdd(ctx, "students", "Khannedy")
+
+	assert.Equal(t, int64(3), client.SCard(ctx, "students").Val())
+	assert.Equal(t, []string{"Eko", "Kurniawan", "Khannedy"}, client.SMembers(ctx, "students").Val())
+}
