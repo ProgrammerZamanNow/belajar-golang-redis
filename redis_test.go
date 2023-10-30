@@ -124,3 +124,15 @@ func TestHyperLogLog(t *testing.T) {
 	total := client.PFCount(ctx, "visitors").Val()
 	assert.Equal(t, int64(6), total)
 }
+
+func TestPipeline(t *testing.T) {
+	_, err := client.Pipelined(ctx, func(pipeliner redis.Pipeliner) error {
+		pipeliner.SetEx(ctx, "name", "Eko", 5*time.Second)
+		pipeliner.SetEx(ctx, "address", "Indonesia", 5*time.Second)
+		return nil
+	})
+	assert.Nil(t, err)
+
+	assert.Equal(t, "Eko", client.Get(ctx, "name").Val())
+	assert.Equal(t, "Indonesia", client.Get(ctx, "address").Val())
+}
