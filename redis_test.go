@@ -136,3 +136,15 @@ func TestPipeline(t *testing.T) {
 	assert.Equal(t, "Eko", client.Get(ctx, "name").Val())
 	assert.Equal(t, "Indonesia", client.Get(ctx, "address").Val())
 }
+
+func TestTransaction(t *testing.T) {
+	_, err := client.TxPipelined(ctx, func(pipeliner redis.Pipeliner) error {
+		pipeliner.SetEx(ctx, "name", "Joko", 5*time.Second)
+		pipeliner.SetEx(ctx, "address", "Cirebon", 5*time.Second)
+		return nil
+	})
+	assert.Nil(t, err)
+
+	assert.Equal(t, "Joko", client.Get(ctx, "name").Val())
+	assert.Equal(t, "Cirebon", client.Get(ctx, "address").Val())
+}
